@@ -18,7 +18,7 @@
 
 ---
 
-## Table: doctors
+### Table: doctors
 * id: INT, Primary Key, AUTO_INCREMENT
 * first_name: VARCHAR(100), NOT NULL
 * last_name: VARCHAR(100), NOT NULL
@@ -39,7 +39,7 @@
 
 ---
 
-## Table: admin
+### Table: admin
 * id: INT, Primary Key, AUTO_INCREMENT
 * username: VARCHAR(100), NOT NULL, UNIQUE
 * email: VARCHAR(255), NOT NULL, UNIQUE
@@ -53,7 +53,7 @@
 
 ---
 
-## Table: appointments
+### Table: appointments
 * id: INT, Primary Key, AUTO_INCREMENT
 * doctor_id: INT, NOT NULL, Foreign Key → doctors(id)
 * patient_id: INT, NOT NULL, Foreign Key → patients(id)
@@ -76,7 +76,7 @@
 
 ---
 
-## Table: doctor_availability
+### Table: doctor_availability
 * id: INT, Primary Key, AUTO_INCREMENT
 * doctor_id: INT, NOT NULL, Foreign Key → doctors(id)
 * available_date: DATE, NOT NULL
@@ -91,7 +91,7 @@
 
 ---
 
-## Table: prescriptions
+### Table: prescriptions
 * id: INT, Primary Key, AUTO_INCREMENT
 * appointment_id: INT, NOT NULL, Foreign Key → appointments(id)
 * doctor_id: INT, NOT NULL, Foreign Key → doctors(id)
@@ -108,7 +108,7 @@
 
 ---
 
-## Table: clinic_locations
+### Table: clinic_locations
 * id: INT, Primary Key, AUTO_INCREMENT
 * name: VARCHAR(100), NOT NULL
 * address: VARCHAR(255), NOT NULL
@@ -122,7 +122,7 @@
 
 ---
 
-## Table: payments
+### Table: payments
 * id: INT, Primary Key, AUTO_INCREMENT
 * appointment_id: INT, NOT NULL, Foreign Key → appointments(id)
 * amount: DECIMAL(10,2), NOT NULL
