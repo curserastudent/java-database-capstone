@@ -1,4 +1,4 @@
-# Exercise 1: Define Admin User Stories
+## Admin User Stories
 
 ## User Story 1
 **Title:**
@@ -69,7 +69,7 @@
 **Notes:**
 * The procedure should aggregate appointments by month.
 
-# Exercise 2: Define Patient User Stories
+## Patient User Stories
 
 ## User Story 1
 **Title:**
@@ -153,7 +153,7 @@
 **Notes:**
 * Appointments should be ordered chronologically.
 
-# Exercise 3: Define Doctor User Stories
+## Doctor User Stories
 
 ## User Story 1
 **Title:**
