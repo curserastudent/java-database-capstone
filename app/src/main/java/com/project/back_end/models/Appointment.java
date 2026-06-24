@@ -7,16 +7,8 @@ import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Max;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 public class Appointment {
@@ -44,6 +36,12 @@ public class Appointment {
     @Min(value = 0, message = "Status must be 0 or 1")
     @Max(value = 1, message = "Status must be 0 or 1")
     private Integer status;
+
+    @Size(max = 255)
+    private String reasonForVisit;
+
+    @Size(max = 500)
+    private String notes;
 
     /*
      * 🔒 PROTECCIÓN DE DATOS SENSIBLES

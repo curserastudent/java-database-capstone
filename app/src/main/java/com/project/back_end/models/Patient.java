@@ -1,15 +1,14 @@
 package com.project.back_end.models;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @Entity
 public class Patient {
@@ -45,6 +44,8 @@ public class Patient {
     @Size(max = 255, message = "Address cannot exceed 255 characters")
     private String address;
 
+
+    
     // =========================
     // CONSTRUCTOR
     // =========================

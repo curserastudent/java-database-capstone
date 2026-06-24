@@ -3,8 +3,7 @@ package com.project.back_end.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @Document(collection = "prescriptions")
 public class Prescription {
@@ -33,11 +32,19 @@ public class Prescription {
     @Size(min = 3, max = 20, message = "Dosage must be between 3 and 20 characters")
     private String dosage;
 
+
     // =========================
     // OPTIONAL FIELD
     // =========================
     @Size(max = 200, message = "Doctor notes cannot exceed 200 characters")
     private String doctorNotes;
+
+    @Min(0)
+    @Max(10)
+    private Integer refillCount;
+
+    @Size(max = 100)
+    private String pharmacyName;
 
     // =========================
     // CONSTRUCTOR

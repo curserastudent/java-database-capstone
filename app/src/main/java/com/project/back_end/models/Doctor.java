@@ -9,10 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @Entity
 public class Doctor {
@@ -50,6 +47,17 @@ public class Doctor {
     @NotNull(message = "Phone cannot be null")
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     private String phone;
+
+    @Min(0)
+    @Max(60)
+    private Integer yearsOfExperience;
+
+    @Size(max = 255)
+    private String clinicAddress;
+
+    @Min(1)
+    @Max(5)
+    private Double rating;
 
     // =========================
     // AVAILABILITY (JPA STRUCTURE)
