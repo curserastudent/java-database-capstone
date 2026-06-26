@@ -1,41 +1,202 @@
-/*
-Import the overlay function for booking appointments from loggedPatient.js
+/**
+ * ==========================================================
+ * File: doctorCard.js
+ * Description:
+ * Creates a doctor card dynamically based on the user's role.
+ * ==========================================================
+ */
 
-  Import the deleteDoctor API function to remove doctors (admin role) from docotrServices.js
+/**
+ * Creates a doctor card.
+ *
+ * @param {Object} doctor - Doctor information.
+ * @param {string} doctor.name
+ * @param {string} doctor.specialty
+ * @param {string} doctor.email
+ * @param {Array<string>} doctor.availability
+ *
+ * @returns {HTMLElement}
+ */
+async function createDoctorCard(doctor) {
 
-  Import function to fetch patient details (used during booking) from patientServices.js
+    /**
+     * Create the main card container.
+     */
+    const card = document.createElement("div");
+    card.classList.add("doctor-card");
 
-  Function to create and return a DOM element for a single doctor card
-    Create the main container for the doctor card
-    Retrieve the current user role from localStorage
-    Create a div to hold doctor information
-    Create and set the doctor’s name
-    Create and set the doctor's specialization
-    Create and set the doctor's email
-    Create and list available appointment times
-    Append all info elements to the doctor info container
-    Create a container for card action buttons
-    === ADMIN ROLE ACTIONS ===
-      Create a delete button
-      Add click handler for delete button
-     Get the admin token from localStorage
-        Call API to delete the doctor
-        Show result and remove card if successful
-      Add delete button to actions container
-   
-    === PATIENT (NOT LOGGED-IN) ROLE ACTIONS ===
-      Create a book now button
-      Alert patient to log in before booking
-      Add button to actions container
-  
-    === LOGGED-IN PATIENT ROLE ACTIONS === 
-      Create a book now button
-      Handle booking logic for logged-in patient   
-        Redirect if token not available
-        Fetch patient data with token
-        Show booking overlay UI with doctor and patient info
-      Add button to actions container
-   
-  Append doctor info and action buttons to the car
-  Return the complete doctor card element
-*/
+    /**
+     * Get the current user role.
+     */
+    const role = localStorage.getItem("userRole");
+
+    /**
+     * Create the doctor information section.
+     */
+    const infoDiv = document.createElement("div");
+    infoDiv.classList.add("doctor-info");
+
+    /**
+     * Doctor name.
+     */
+    const name = document.createElement("h3");
+    name.textContent = doctor.name;
+
+    /**
+     * Doctor specialty.
+     */
+    const specialty = document.createElement("p");
+    specialty.innerHTML = `<strong>Specialty:</strong> ${doctor.specialty}`;
+
+    /**
+     * Doctor email.
+     */
+    const email = document.createElement("p");
+    email.innerHTML = `<strong>Email:</strong> ${doctor.email}`;
+
+    /**
+     * Doctor availability.
+     */
+    const availability = document.createElement("p");
+    availability.innerHTML = `
+        <strong>Availability:</strong>
+        ${doctor.availability.join(", ")}
+    `;
+
+    /**
+     * Append doctor information.
+     */
+    infoDiv.appendChild(name);
+    infoDiv.appendChild(specialty);
+    infoDiv.appendChild(email);
+    infoDiv.appendChild(availability);
+
+    /**
+     * Create the actions container.
+     */
+    const actionsDiv = document.createElement("div");
+    actionsDiv.classList.add("card-actions");
+
+    /**
+     * Admin actions.
+     */
+    if (role === "admin") {
+
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Delete";
+
+        removeBtn.addEventListener("click", async () => {
+
+            const confirmed = confirm(
+                "Are you sure you want to delete this doctor?"
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+
+            try {
+
+                /**
+                 * Replace with your API endpoint.
+                 */
+                const response = await fetch(`/api/doctors/${doctor.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Unable to delete doctor.");
+                }
+
+                /**
+                 * Remove the card from the page.
+                 */
+                card.remove();
+
+            } catch (error) {
+
+                console.error(error);
+                alert("Failed to delete doctor.");
+
+            }
+
+        });
+
+        actionsDiv.appendChild(removeBtn);
+
+    }
+
+    /**
+     * Guest patient actions.
+     */
+    else if (role === "patient") {
+
+        const bookNow = document.createElement("button");
+        bookNow.textContent = "Book Now";
+
+        bookNow.addEventListener("click", () => {
+
+            alert("Patient needs to login first.");
+
+        });
+
+        actionsDiv.appendChild(bookNow);
+
+    }
+
+    /**
+     * Logged patient actions.
+     */
+    else if (role === "loggedPatient") {
+
+        const bookNow = document.createElement("button");
+        bookNow.textContent = "Book Now";
+
+        bookNow.addEventListener("click", async (event) => {
+
+            try {
+
+                const token = localStorage.getItem("token");
+
+                const patientData =
+                    await getPatientData(token);
+
+                showBookingOverlay(
+                    event,
+                    doctor,
+                    patientData
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to retrieve patient information."
+                );
+
+            }
+
+        });
+
+        actionsDiv.appendChild(bookNow);
+
+    }
+
+    /**
+     * Assemble the card.
+     */
+    card.appendChild(infoDiv);
+    card.appendChild(actionsDiv);
+
+    /**
+     * Return the completed card.
+     */
+    return card;
+
+}
