@@ -1,53 +1,219 @@
-/*
-  Import the base API URL from the config file
-  Define a constant DOCTOR_API to hold the full endpoint for doctor-related actions
+/**
+ * ==========================================================
+ * File: doctorServices.js
+ * Description:
+ * Service layer responsible for all Doctor API requests.
+ * ==========================================================
+ */
 
+import { API_BASE_URL } from "../config/config.js";
 
-  Function: getDoctors
-  Purpose: Fetch the list of all doctors from the API
+/**
+ * Doctor API Endpoint
+ */
+const DOCTOR_API = `${API_BASE_URL}/doctor`;
 
-   Use fetch() to send a GET request to the DOCTOR_API endpoint
-   Convert the response to JSON
-   Return the 'doctors' array from the response
-   If there's an error (e.g., network issue), log it and return an empty array
+/**
+ * ==========================================================
+ * Get All Doctors
+ * ==========================================================
+ */
 
+/**
+ * Retrieves all doctors from the server.
+ *
+ * @returns {Promise<Array>}
+ */
+export async function getDoctors() {
 
-  Function: deleteDoctor
-  Purpose: Delete a specific doctor using their ID and an authentication token
+    try {
 
-   Use fetch() with the DELETE method
-    - The URL includes the doctor ID and token as path parameters
-   Convert the response to JSON
-   Return an object with:
-    - success: true if deletion was successful
-    - message: message from the server
-   If an error occurs, log it and return a default failure response
+        const response = await fetch(DOCTOR_API);
 
+        if (!response.ok) {
+            throw new Error("Unable to retrieve doctors.");
+        }
 
-  Function: saveDoctor
-  Purpose: Save (create) a new doctor using a POST request
+        const doctors = await response.json();
 
-   Use fetch() with the POST method
-    - URL includes the token in the path
-    - Set headers to specify JSON content type
-    - Convert the doctor object to JSON in the request body
+        return doctors;
 
-   Parse the JSON response and return:
-    - success: whether the request succeeded
-    - message: from the server
+    } catch (error) {
 
-   Catch and log errors
-    - Return a failure response if an error occurs
+        console.error("getDoctors()", error);
 
+        return [];
 
-  Function: filterDoctors
-  Purpose: Fetch doctors based on filtering criteria (name, time, and specialty)
+    }
 
-   Use fetch() with the GET method
-    - Include the name, time, and specialty as URL path parameters
-   Check if the response is OK
-    - If yes, parse and return the doctor data
-    - If no, log the error and return an object with an empty 'doctors' array
+}
 
-   Catch any other errors, alert the user, and return a default empty result
-*/
+/**
+ * ==========================================================
+ * Delete Doctor
+ * ==========================================================
+ */
+
+/**
+ * Deletes a doctor.
+ *
+ * @param {number|string} id
+ * @param {string} token
+ * @returns {Promise<Object>}
+ */
+export async function deleteDoctor(id, token) {
+
+    try {
+
+        const response = await fetch(`${DOCTOR_API}/${id}`, {
+
+            method: "DELETE",
+
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+
+        });
+
+        const result = await response.json();
+
+        return {
+            success: response.ok,
+            message: result.message || "Doctor deleted successfully."
+        };
+
+    } catch (error) {
+
+        console.error("deleteDoctor()", error);
+
+        return {
+            success: false,
+            message: "Unable to delete doctor."
+        };
+
+    }
+
+}
+
+/**
+ * ==========================================================
+ * Save Doctor
+ * ==========================================================
+ */
+
+/**
+ * Creates a new doctor.
+ *
+ * @param {Object} doctor
+ * @param {string} token
+ * @returns {Promise<Object>}
+ */
+export async function saveDoctor(doctor, token) {
+
+    try {
+
+        const response = await fetch(DOCTOR_API, {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+
+            },
+
+            body: JSON.stringify(doctor)
+
+        });
+
+        const result = await response.json();
+
+        return {
+
+            success: response.ok,
+            message: result.message || "Doctor saved successfully."
+
+        };
+
+    } catch (error) {
+
+        console.error("saveDoctor()", error);
+
+        return {
+
+            success: false,
+            message: "Unable to save doctor."
+
+        };
+
+    }
+
+}
+
+/**
+ * ==========================================================
+ * Filter Doctors
+ * ==========================================================
+ */
+
+/**
+ * Filters doctors by name, time and specialty.
+ *
+ * @param {string|null} name
+ * @param {string|null} time
+ * @param {string|null} specialty
+ *
+ * @returns {Promise<Array>}
+ */
+export async function filterDoctors(
+    name = "",
+    time = "",
+    specialty = ""
+) {
+
+    try {
+
+        /**
+         * Build query parameters dynamically.
+         */
+        const params = new URLSearchParams();
+
+        if (name) {
+            params.append("name", name);
+        }
+
+        if (time) {
+            params.append("time", time);
+        }
+
+        if (specialty) {
+            params.append("specialty", specialty);
+        }
+
+        const url = params.toString()
+            ? `${DOCTOR_API}/filter?${params.toString()}`
+            : DOCTOR_API;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Unable to filter doctors.");
+        }
+
+        const doctors = await response.json();
+
+        return doctors;
+
+    } catch (error) {
+
+        console.error("filterDoctors()", error);
+
+        alert("Unable to filter doctors.");
+
+        return [];
+
+    }
+
+}

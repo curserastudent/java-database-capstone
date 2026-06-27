@@ -10,7 +10,7 @@ export async function patientSignup(data) {
       {
         method: "POST",
         headers: {
-          "Content-type": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       }
@@ -29,17 +29,29 @@ export async function patientSignup(data) {
 
 //For logging in patient
 export async function patientLogin(data) {
-  console.log("patientLogin :: ", data)
-  return await fetch(`${PATIENT_API}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
 
+    try {
+
+        console.log("patientLogin:", data);
+
+        return await fetch(`${PATIENT_API}/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+    } catch (error) {
+
+        console.error("patientLogin:", error);
+
+        return null;
+
+    }
 
 }
+
 
 // For getting patient data (name ,id , etc ). Used in booking appointments
 export async function getPatientData(token) {

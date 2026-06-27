@@ -1,72 +1,289 @@
-/*
-  This script handles the admin dashboard functionality for managing doctors:
-  - Loads all doctor cards
-  - Filters doctors by name, time, or specialty
-  - Adds a new doctor via modal form
+/**
+ * ==========================================================
+ * File: adminDashboard.js
+ * Description:
+ * Handles the Admin Dashboard functionality:
+ *  - Load doctors
+ *  - Search and filter doctors
+ *  - Add new doctor
+ * ==========================================================
+ */
 
+import { openModal } from "../components/modals.js";
 
-  Attach a click listener to the "Add Doctor" button
-  When clicked, it opens a modal form using openModal('addDoctor')
+import {
+    getDoctors,
+    filterDoctors,
+    saveDoctor
+} from "../services/doctorServices.js";
 
+import { createDoctorCard } from "../components/doctorCard.js";
 
-  When the DOM is fully loaded:
-    - Call loadDoctorCards() to fetch and display all doctors
+/**
+ * ==========================================================
+ * Page Initialization
+ * ==========================================================
+ */
 
+document.addEventListener("DOMContentLoaded", () => {
 
-  Function: loadDoctorCards
-  Purpose: Fetch all doctors and display them as cards
+    loadDoctorCards();
 
-    Call getDoctors() from the service layer
-    Clear the current content area
-    For each doctor returned:
-    - Create a doctor card using createDoctorCard()
-    - Append it to the content div
+    initializeEventListeners();
 
-    Handle any fetch errors by logging them
+});
 
+/**
+ * ==========================================================
+ * Initialize Events
+ * ==========================================================
+ */
 
-  Attach 'input' and 'change' event listeners to the search bar and filter dropdowns
-  On any input change, call filterDoctorsOnChange()
+function initializeEventListeners() {
 
+    /**
+     * Add Doctor Button
+     */
+    const addDoctorButton = document.getElementById("addDocBtn");
 
-  Function: filterDoctorsOnChange
-  Purpose: Filter doctors based on name, available time, and specialty
+    if (addDoctorButton) {
 
-    Read values from the search bar and filters
-    Normalize empty values to null
-    Call filterDoctors(name, time, specialty) from the service
+        addDoctorButton.addEventListener("click", () => {
 
-    If doctors are found:
-    - Render them using createDoctorCard()
-    If no doctors match the filter:
-    - Show a message: "No doctors found with the given filters."
+            openModal("addDoctor");
 
-    Catch and display any errors with an alert
+        });
 
+    }
 
-  Function: renderDoctorCards
-  Purpose: A helper function to render a list of doctors passed to it
+    /**
+     * Search Bar
+     */
+    const searchBar = document.getElementById("searchBar");
 
-    Clear the content area
-    Loop through the doctors and append each card to the content area
+    if (searchBar) {
 
+        searchBar.addEventListener(
+            "input",
+            filterDoctorsOnChange
+        );
 
-  Function: adminAddDoctor
-  Purpose: Collect form data and add a new doctor to the system
+    }
 
-    Collect input values from the modal form
-    - Includes name, email, phone, password, specialty, and available times
+    /**
+     * Time Filter
+     */
+    const filterTime = document.getElementById("filterTime");
 
-    Retrieve the authentication token from localStorage
-    - If no token is found, show an alert and stop execution
+    if (filterTime) {
 
-    Build a doctor object with the form values
+        filterTime.addEventListener(
+            "change",
+            filterDoctorsOnChange
+        );
 
-    Call saveDoctor(doctor, token) from the service
+    }
 
-    If save is successful:
-    - Show a success message
-    - Close the modal and reload the page
+    /**
+     * Specialty Filter
+     */
+    const filterSpecialty =
+        document.getElementById("filterSpecialty");
 
-    If saving fails, show an error message
-*/
+    if (filterSpecialty) {
+
+        filterSpecialty.addEventListener(
+            "change",
+            filterDoctorsOnChange
+        );
+
+    }
+
+    /**
+     * Add Doctor Form
+     */
+    const doctorForm =
+        document.getElementById("addDoctorForm");
+
+    if (doctorForm) {
+
+        doctorForm.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            await adminAddDoctor();
+
+        });
+
+    }
+
+}
+
+/**
+ * ==========================================================
+ * Load Doctors
+ * ==========================================================
+ */
+
+async function loadDoctorCards() {
+
+    const doctors = await getDoctors();
+
+    renderDoctorCards(doctors);
+
+}
+
+/**
+ * ==========================================================
+ * Render Doctor Cards
+ * ==========================================================
+ */
+
+function renderDoctorCards(doctors) {
+
+    const contentDiv = document.getElementById("content");
+
+    contentDiv.innerHTML = "";
+
+    if (!doctors || doctors.length === 0) {
+
+        contentDiv.innerHTML =
+            "<p>No doctors found.</p>";
+
+        return;
+
+    }
+
+    doctors.forEach((doctor) => {
+
+        const card = createDoctorCard(doctor);
+
+        contentDiv.appendChild(card);
+
+    });
+
+}
+
+/**
+ * ==========================================================
+ * Search / Filter Doctors
+ * ==========================================================
+ */
+
+async function filterDoctorsOnChange() {
+
+    const name =
+        document.getElementById("searchBar")?.value || "";
+
+    const time =
+        document.getElementById("filterTime")?.value || "";
+
+    const specialty =
+        document.getElementById("filterSpecialty")?.value || "";
+
+    const doctors =
+        await filterDoctors(name, time, specialty);
+
+    renderDoctorCards(doctors);
+
+}
+
+/**
+ * ==========================================================
+ * Add Doctor
+ * ==========================================================
+ */
+
+async function adminAddDoctor() {
+
+    /**
+     * Verify admin token.
+     */
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+
+        alert("Administrator session has expired.");
+
+        return;
+
+    }
+
+    /**
+     * Read form fields.
+     */
+    const name =
+        document.getElementById("doctorName").value.trim();
+
+    const specialty =
+        document.getElementById("doctorSpecialty").value;
+
+    const email =
+        document.getElementById("doctorEmail").value.trim();
+
+    const password =
+        document.getElementById("doctorPassword").value;
+
+    const mobile =
+        document.getElementById("doctorMobile").value.trim();
+
+    /**
+     * Read availability checkboxes.
+     */
+    const availability = [];
+
+    document
+        .querySelectorAll(
+            "input[name='availability']:checked"
+        )
+        .forEach((checkbox) => {
+
+            availability.push(checkbox.value);
+
+        });
+
+    /**
+     * Doctor object.
+     */
+    const doctor = {
+
+        name,
+        specialty,
+        email,
+        password,
+        mobile,
+        availability
+
+    };
+
+    /**
+     * Save doctor.
+     */
+    const result = await saveDoctor(
+        doctor,
+        token
+    );
+
+    if (result.success) {
+
+        alert(result.message);
+
+        /**
+         * Close modal.
+         */
+        document
+            .getElementById("modalOverlay")
+            ?.classList.remove("show");
+
+        /**
+         * Reload doctors.
+         */
+        await loadDoctorCards();
+
+    } else {
+
+        alert(result.message);
+
+    }
+
+}
