@@ -8,10 +8,10 @@ import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.project.back_end.model.Admin;
-import com.project.back_end.model.Doctor;
-import com.project.back_end.model.Patient;
+import org.springframework.stereotype.Service;
+import com.project.back_end.models.Admin;
+import com.project.back_end.models.Doctor;
+import com.project.back_end.models.Patient;
 import com.project.back_end.repo.AdminRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;

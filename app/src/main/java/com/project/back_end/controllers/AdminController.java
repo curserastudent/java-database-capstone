@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.project.back_end.model.Admin;
+import com.project.back_end.models.Admin;
 import com.project.back_end.services.Service;
 
 @RestController

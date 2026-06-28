@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.project.back_end.model.Appointment;
+import com.project.back_end.models.Appointment;
 
 import jakarta.transaction.Transactional;
 

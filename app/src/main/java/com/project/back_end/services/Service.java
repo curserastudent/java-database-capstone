@@ -1,7 +1,5 @@
 package com.project.back_end.services;
 
-package com.project.back_end.services;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -13,15 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.project.back_end.DTO.Login;
-import com.project.back_end.model.Admin;
-import com.project.back_end.model.Appointment;
-import com.project.back_end.model.Doctor;
-import com.project.back_end.model.Patient;
+import com.project.back_end.models.Admin;
+import com.project.back_end.models.Appointment;
+import com.project.back_end.models.Doctor;
+import com.project.back_end.models.Patient;
 import com.project.back_end.repo.AdminRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
 
-@Service
+@org.springframework.stereotype.Service
 public class Service {
 
     private final TokenService tokenService;
@@ -85,10 +83,7 @@ public class Service {
                         .body(response);
             }
 
-            String token = tokenService.generateToken(
-                    admin.getId(),
-                    admin.getUsername(),
-                    "ADMIN");
+            String token = tokenService.generateToken(admin.getUsername());
 
             response.put("token", token);
 
@@ -215,10 +210,7 @@ public class Service {
                         .body(response);
             }
 
-            String token = tokenService.generateToken(
-                    patient.getId(),
-                    patient.getEmail(),
-                    "PATIENT");
+            String token = tokenService.generateToken(patient.getEmail());
 
             response.put("token", token);
 
@@ -241,7 +233,7 @@ public class Service {
             String name,
             String token) {
 
-        String email = tokenService.extractEmail(token);
+        String email = tokenService.extractIdentifier(token);
 
         Patient patient = patientRepository.findByEmail(email);
 

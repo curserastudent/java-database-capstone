@@ -1,3 +1,27 @@
+package com.project.back_end.services;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.*;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.project.back_end.DTO.AppointmentDTO;
+import com.project.back_end.DTO.Login;
+import com.project.back_end.models.Appointment;
+import com.project.back_end.models.Doctor;
+import com.project.back_end.repo.AppointmentRepository;
+import com.project.back_end.repo.DoctorRepository;
+
+import jakarta.transaction.Transactional;
+
 @Service
 public class DoctorService {
 
@@ -23,7 +47,7 @@ public class DoctorService {
      * @return list of available time slots
      */
     @Transactional
-    public List<String> getDoctorAvailability(Long doctorId, LocalDate date) {
+    public List<String> getDoctorAvailability(Long doctorId, LocalDateTime date) {
 
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
@@ -160,10 +184,7 @@ public class DoctorService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        String token = tokenService.generateToken(
-                doctor.getId(),
-                doctor.getEmail(),
-                "DOCTOR");
+        String token = tokenService.generateToken(doctor.getEmail());
 
         response.put("token", token);
         response.put("message", "Login successful.");
@@ -344,7 +365,7 @@ public class DoctorService {
         for (Doctor doctor : doctors) {
 
             // Replace getAvailability() with the actual method in your entity.
-            for (String slot : doctor.getAvailability()) {
+            for (String slot : doctor.getAvailableTimes()) {
 
                 int hour = Integer.parseInt(slot.substring(0, 2));
 
