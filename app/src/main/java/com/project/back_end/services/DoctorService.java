@@ -49,8 +49,8 @@ public class DoctorService {
     @Transactional
     public List<String> getDoctorAvailability(Long doctorId, LocalDateTime date) {
 
-        LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+        LocalDateTime start = date.toLocalDate().atStartOfDay();
+        LocalDateTime end = start.plusDays(1).minusNanos(1);
 
         // Fetch booked appointments for the doctor
         List<Appointment> appointments =

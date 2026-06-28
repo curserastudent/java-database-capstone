@@ -113,7 +113,7 @@ public class AppointmentService {
      */
     public Map<String, Object> getAppointment(
             String pname,
-            LocalDate date,
+            LocalDateTime date,
             String token) {
 
         Map<String, Object> result = new HashMap<>();
@@ -122,8 +122,8 @@ public class AppointmentService {
         // Long doctorId = tokenService.extractDoctorId(token);
         Long doctorId = tokenService.getUserIdFromToken(token);
 
-        LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+        LocalDateTime start = date.toLocalDate().atStartOfDay();
+        LocalDateTime end = start.plusDays(1).minusNanos(1);
 
         List<Appointment> appointments;
 

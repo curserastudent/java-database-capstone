@@ -1,5 +1,6 @@
 package com.project.back_end.controllers;
 
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class AppointmentController {
      */
     @GetMapping("/{date}/{patientName}/{token}")
     public ResponseEntity<?> getAppointments(
-            @PathVariable LocalDate date,
+            @PathVariable LocalDateTime date,
             @PathVariable String patientName,
             @PathVariable String token) {
 

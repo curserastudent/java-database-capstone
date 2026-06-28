@@ -20,7 +20,7 @@ public class AppointmentDTO {
     private int status;
 
     // Campos derivados
-    private LocalDate appointmentDate;
+    private LocalDateTime appointmentDate;
     private LocalTime appointmentTimeOnly;
     private LocalDateTime endTime;
 
@@ -94,7 +94,7 @@ public class AppointmentDTO {
         return status;
     }
 
-    public LocalDate getAppointmentDate() {
+    public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
 

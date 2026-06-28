@@ -64,7 +64,7 @@ public class Appointment {
     }
 
     @Transient
-    public LocalDate getAppointmentDate() {
+    public LocalDateTime getAppointmentDate() {
         return appointmentTime != null ? appointmentTime.toLocalDate() : null;
     }
 

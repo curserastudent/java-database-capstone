@@ -38,7 +38,7 @@ public class PrescriptionController {
             return validation;
         }
 
-        appointmentService.changeStatus(prescription.getAppointmentId());
+        appointmentService.changeStatus(prescription.getAppointmentId(), 1);
 
         return prescriptionService.savePrescription(prescription);
     }
