@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.*;
 
@@ -47,9 +48,9 @@ public class DoctorService {
      * @return list of available time slots
      */
     @Transactional
-    public List<String> getDoctorAvailability(Long doctorId, LocalDateTime date) {
+    public List<String> getDoctorAvailability(Long doctorId, LocalDate date) {
 
-        LocalDateTime start = date.toLocalDate().atStartOfDay();
+        LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = start.plusDays(1).minusNanos(1);
 
         // Fetch booked appointments for the doctor

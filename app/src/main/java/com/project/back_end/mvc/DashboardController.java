@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
@@ -21,9 +22,10 @@ public class DashboardController {
     @GetMapping("/adminDashboard/{token}")
     public String adminDashboard(@PathVariable String token) {
 
-        Map<String, String> validation = service.validateToken(token, "admin");
+        ResponseEntity<Map<String, String>> validation =
+                service.validateToken(token, "admin");
 
-        if (validation.isEmpty()) {
+        if (validation.getStatusCode().is2xxSuccessful()) {
             return "admin/adminDashboard";
         }
 
@@ -37,9 +39,10 @@ public class DashboardController {
     @GetMapping("/doctorDashboard/{token}")
     public String doctorDashboard(@PathVariable String token) {
 
-        Map<String, String> validation = service.validateToken(token, "doctor");
+        ResponseEntity<Map<String, String>> validation =
+                service.validateToken(token, "doctor");
 
-        if (validation.isEmpty()) {
+        if (validation.getStatusCode().is2xxSuccessful()) {
             return "doctor/doctorDashboard";
         }
 

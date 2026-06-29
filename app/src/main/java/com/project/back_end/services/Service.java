@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+//import org.springframework.stereotype.Service;
 
 import com.project.back_end.DTO.Login;
 import com.project.back_end.models.Admin;
@@ -168,7 +168,7 @@ public class Service {
         List<String> availableSlots =
                 doctorService.getDoctorAvailability(
                         doctor.get().getId(),
-                        appointment.getAppointmentTime().toLocalDate());
+                        appointment.getAppointmentDate());
 
         String requestedTime =
                 appointment.getAppointmentTime()

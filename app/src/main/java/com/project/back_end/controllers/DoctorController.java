@@ -34,7 +34,7 @@ public class DoctorController {
     public ResponseEntity<?> getDoctorAvailability(
             @PathVariable String user,
             @PathVariable Long doctorId,
-            @PathVariable LocalDateTime date,
+            @PathVariable LocalDate date,
             @PathVariable String token) {
 
         ResponseEntity<Map<String, String>> validation =

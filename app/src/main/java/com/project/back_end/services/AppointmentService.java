@@ -118,9 +118,9 @@ public class AppointmentService {
 
         Map<String, Object> result = new HashMap<>();
 
-        // Example:
-        // Long doctorId = tokenService.extractDoctorId(token);
-        Long doctorId = tokenService.getUserIdFromToken(token);
+        Long doctorId = doctorRepository
+                .findByEmail(tokenService.extractIdentifier(token))
+                .getId();
 
         LocalDateTime start = date.toLocalDate().atStartOfDay();
         LocalDateTime end = start.plusDays(1).minusNanos(1);
