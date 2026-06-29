@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
+import jakarta.persistence.FetchType;
+import java.util.ArrayList;
 
 @Entity
 public class Doctor {
@@ -62,8 +64,8 @@ public class Doctor {
     // =========================
     // AVAILABILITY (JPA STRUCTURE)
     // =========================
-    @ElementCollection
-    private List<String> availableTimes;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> availableTimes = new ArrayList<>();
 
     // =========================
     // CONSTRUCTOR

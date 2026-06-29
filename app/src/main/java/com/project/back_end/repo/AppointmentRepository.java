@@ -24,10 +24,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
         SELECT a
         FROM Appointment a
         LEFT JOIN FETCH a.doctor d
-        LEFT JOIN FETCH d.availability
+        LEFT JOIN FETCH d.availableTimes
         WHERE d.id = :doctorId
-          AND a.appointmentTime BETWEEN :start AND :end
-        ORDER BY a.appointmentTime ASC
+        AND a.appointmentTime BETWEEN :start AND :end
+        ORDER BY a.appointmentTime
     """)
     List<Appointment> findByDoctorIdAndAppointmentTimeBetween(
             @Param("doctorId") Long doctorId,
@@ -39,14 +39,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * within a given time range.
      */
     @Query("""
-        SELECT a
+        SELECT DISTINCT a
         FROM Appointment a
         LEFT JOIN FETCH a.doctor d
-        LEFT JOIN FETCH d.availability
+        LEFT JOIN FETCH d.availableTimes
         LEFT JOIN FETCH a.patient p
         WHERE d.id = :doctorId
-          AND LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName, '%'))
-          AND a.appointmentTime BETWEEN :start AND :end
+        AND LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName, '%'))
+        AND a.appointmentTime BETWEEN :start AND :end
         ORDER BY a.appointmentTime ASC
     """)
     List<Appointment> findByDoctorIdAndPatient_NameContainingIgnoreCaseAndAppointmentTimeBetween(
